@@ -10,7 +10,12 @@ unitest {
 若符合我们想要的结果，则应返回 0 ，否则一般返回 1 。
 ```c
 // unitest.h 之定义：
-#define unitest static inline __attribute__((always_inline)) int _unitest_##__COUNTER__()
+#ifndef __UNITEST_H__
+#define __UNITEST_H__
+#define CONCAT(a, b) a##b
+#define MAKE_UNITEST(n) static inline __attribute__((always_inline)) int CONCAT(_unitest_, n)()
+#define unitest MAKE_UNITEST(__COUNTER__)
+#endif
 ```
 如果你使用 O1 ，则 unitest 不会被编译进代码。
 如果你使用 O0 ，这些函数可能会被某些编译器编译进代码。你使用的编译器可能出现我们所不希望的行为。
