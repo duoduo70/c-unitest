@@ -147,26 +147,22 @@ def lexer(content: list[str]) -> list:
         return ret
 
 def build_code_from_tokens(tokens: list) -> str:
-        identlevel = 1  # 少一个 pass ，不用再额外加 ident
         ret = ""
         for i, token in enumerate(tokens):
                 if token[0] == TokenType.ENTER:
-                        ret += '\n' + identlevel * "    "
+                        ret += '\n'
                 elif token[0] == TokenType.ABSTRACT_OPERATOR and token[1] == '{':
-                        identlevel += 1
                         ret += '{'
                 elif token[0] == TokenType.ABSTRACT_OPERATOR and token[1] == '(':
                         ret += '('
                 elif token[0] == TokenType.ABSTRACT_OPERATOR and token[1] == ')':
-                        ret = ret[:-1]
                         ret += ')'
                 elif token[0] == TokenType.ABSTRACT_OPERATOR and token[1] == '}':
-                        identlevel -= 1
-                        ret = ret[:-4]
                         ret += '} '
                 elif token[0] == TokenType.ABSTRACT_OPERATOR and token[1] == ';':
-                        ret = ret[:-1]
                         ret += token[1]
+                elif token[0] == TokenType.STRING:
+                        ret += '"' + token[1] + '"'
                 elif token[0] != TokenType.LEXER_PLACEHOLDER:
                         ret += token[1] + " "
         return ret
